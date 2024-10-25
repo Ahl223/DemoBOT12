@@ -1,0 +1,2 @@
+#this info.py
+BOT_TOKEN = '7236453483:AAGRmqldMy9GgnfDahi03Hpu7zLJZVkXTM4'
