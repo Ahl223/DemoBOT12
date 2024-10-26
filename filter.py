@@ -90,7 +90,8 @@ def contains_forbidden_content(text):
             if re.search(pattern1, normalized_text):
                 return True
 
-    if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
+    # السماح بروابط اليوتيوب فقط وحظر أي روابط أخرى
+    if re.search(r'http[s]?://(?!www\.youtube\.com|youtu\.be)', normalized_text):
         return True
 
     return False
