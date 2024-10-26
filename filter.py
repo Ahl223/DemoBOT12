@@ -57,14 +57,16 @@ def contains_forbidden_content(text):
     normalized_text = normalize_arabic_text(text)
     normalized_forbidden_words = [normalize_arabic_text(word) for word in FORBIDDEN_WORDS]
 
+    # تحقق من وجود كلمات محظورة
     for word in normalized_forbidden_words:
         if re.search(rf'\b{re.escape(word)}\b', normalized_text):
             return True
         
+    # تحقق من أرقام الهواتف المحظورة
     if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):
         return True
 
-    # التحقق من التركيبات المحظورة
+    # تحقق من التركيبات المحظورة
     forbidden_combinations = [
         (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
         (r'\bعروض\b', r'\bمضمون\b'),
@@ -90,9 +92,11 @@ def contains_forbidden_content(text):
             if re.search(pattern1, normalized_text):
                 return True
 
-    # السماح بروابط اليوتيوب فقط وحظر روابط تيك توك وأي روابط أخرى
-    if re.search(r'http[s]?://(?!www\.youtube\.com|youtu\.be)(?!vt\.tiktok\.com)', normalized_text):
-        return True
+    # تحقق من الروابط - السماح فقط بروابط YouTube
+    if re.search(r'http[s]?://', text):
+        # السماح فقط بروابط YouTube
+        if not re.search(r'(youtube\.com|youtu\.be)', text):
+            return True
 
     return False
 
