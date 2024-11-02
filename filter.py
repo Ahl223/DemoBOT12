@@ -36,17 +36,23 @@ def remove_tashkeel(text):
     return re.sub(r'[\u0610-\u061A\u064B-\u0652]', '', text)
 
 def normalize_arabic_text(text):
+    # إزالة الحروف الإضافية مثل الشدة والمد وغيرها
     text = re.sub(r'[ـ*]', '', text)
+    # إزالة المسافات المكررة
     text = re.sub(r'\s+', ' ', text).strip()
 
+    # تحويل الحروف المشابهة
     normalization_map = {
         'ة': 'ه',
-        'ال': '',
+        'ى': 'ي',
+        'آ': 'ا',
+        'إ': 'ا',
+        'أ': 'ا',
     }
     text = ''.join(normalization_map.get(char, char) for char in text)
     text = re.sub(r'\bال', '', text)
-    text = re.sub(r'(.)\1+', r'\1', text)
-    text = re.sub(r'س+ل+ا+م+م* ع+ل+ي+ك+م*', 'السلام عليكم', text)
+    text = re.sub(r'(.)\1+', r'\1', text)  # إزالة التكرار الزائد في الحروف
+    text = re.sub(r'س+ل+ا+م+م* ع+ل+ي+ك+م*', 'السلام عليكم', text)  # تصحيح جملة السلام
     text = re.sub(r'(\d)\s+(\d)', r'\1\2', text)
 
     text = remove_tashkeel(text)
