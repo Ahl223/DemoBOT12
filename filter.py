@@ -26,7 +26,7 @@ FORBIDDEN_WORDS = [
     "خطابه", "الخطــابه", "whatsapp.com", "+967", "967", "قروض بن التنمية", "بنك التنمية", "سنرد", "وسنرد",
     "عذر طبي معتمد", "فحص طبي", "عذر طبي ورقي", "تقرير طبي ورقي", 
     "شهادات صحية", "طاقم التدريس", "ذوو خبرة", 
-    "التواصل واتساب", "يتوفر لدينا", "شهادة صحية", "مختوم pdf", "ارسال المعلومات واتس"
+    "التواصل واتساب", "يتوفر لدينا", "شهادة صحية", "مختوم pdf", "ارسال المعلومات واتس", "سِــکْــلَيَـــفُ"
 ]
 
 # المستخدم المسموح به
@@ -57,16 +57,14 @@ def contains_forbidden_content(text):
     normalized_text = normalize_arabic_text(text)
     normalized_forbidden_words = [normalize_arabic_text(word) for word in FORBIDDEN_WORDS]
 
-    # تحقق من وجود كلمات محظورة
     for word in normalized_forbidden_words:
         if re.search(rf'\b{re.escape(word)}\b', normalized_text):
             return True
         
-    # تحقق من أرقام الهواتف المحظورة
     if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):
         return True
 
-    # تحقق من التركيبات المحظورة
+    # التحقق من التركيبات المحظورة
     forbidden_combinations = [
         (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
         (r'\bعروض\b', r'\bمضمون\b'),
@@ -92,11 +90,8 @@ def contains_forbidden_content(text):
             if re.search(pattern1, normalized_text):
                 return True
 
-    # تحقق من الروابط - السماح فقط بروابط YouTube
-    if re.search(r'http[s]?://', text):
-        # السماح فقط بروابط YouTube
-        if not re.search(r'(youtube\.com|youtu\.be)', text):
-            return True
+    if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
+        return True
 
     return False
 
