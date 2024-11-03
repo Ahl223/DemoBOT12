@@ -21,11 +21,11 @@ FORBIDDEN_WORDS = [
     "اتصال", "للاستفسار", "تواصل معنا", "فرص عمل", "مقابلات", "سيرة ذاتية",
     "رعاية", "تأمين", "مؤسسة", "مشاريع", "اتصال بنا", "إعلانات الشركات",
     "عروض خاصة", "خدمات طلابية", "عروض ترويجية", "بحث عمل", "وظيفة شاغرة", "فرصة عمل", "إعلانات توظيف",
-    "تقديم طلب", "استفسار عن", "معلومات حول", "بدون إذن",
-    "اسقاط", "سكليف", "اجازة", "تطبيق صحتي", "كرت تشغيل",
+    "تقديم طلب", "استفسار عن", "معلومات حول", "بدون إذن", "vt.tiktok",
+    "اسقاط", "سكليف", "اجازة", "تطبيق صحتي", "كرت تشغيل", "www.",
     "خطابه", "الخطــابه", "whatsapp.com", "+967", "967", "قروض بن التنمية", "بنك التنمية", "سنرد", "وسنرد",
     "عذر طبي معتمد", "فحص طبي", "عذر طبي ورقي", "تقرير طبي ورقي", "ســ.ـكـلـ.ــيـ.ـف", "صــحـ.ـتــي",
-    "شهادات صحية", "طاقم التدريس", "ذوو خبرة", 
+    "شهادات صحية", "طاقم التدريس", "ذوو خبرة",
     "التواصل واتساب", "يتوفر لدينا", "شهادة صحية", "مختوم pdf", "ارسال المعلومات واتس", "سِــکْــلَيَـــفُ"
 ]
 
@@ -85,6 +85,8 @@ def contains_forbidden_content(text):
         (r'\bمشروع\b', r'\bتكاليف\b'),
         (r'\bامتحان\b', r'\bمشروع\b'), 
         (r'\bمشروع\b', r'\bامتحان\b'),
+        (r'\bثقه\b', r'\bذي\b'), 
+        (r'\bذي\b', r'\bثقه\b'),
         (r'\b967', None),
     ]
     
@@ -96,7 +98,12 @@ def contains_forbidden_content(text):
             if re.search(pattern1, normalized_text):
                 return True
 
-    if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
+    # السماح بروابط يوتيوب وتيليجرام وتويتر واكس
+    if re.search(r'http[s]?://(www\.)?(youtube\.com|youtu\.be|t\.me|twitter\.com|x\.com)', normalized_text):
+        return False  # السماح
+
+    # منع جميع الروابط الأخرى
+    if re.search(r'http[s]?://|www\.|wa\.me/\d+', normalized_text):
         return True
 
     return False
@@ -122,6 +129,17 @@ async def filter_messages(update: Update, context: CallbackContext) -> None:
 
     message_text = update.message.text
 
+    # السماح بإرسال الرسائل التي تحتوي على @username
+    if "@" in message_text:
+        # إذا كانت الرسالة تحتوي على كلمة محظورة، يجب حذفها
+        if contains_forbidden_content(message_text):
+            try:
+                await update.message.delete()
+                await update.message.reply_text("تم حذف الرسالة لاحتوائها على محتوى غير مسموح به.")
+            except Exception as e:
+                logger.error(f"Error deleting message: {e}")
+            return  # إنهاء الدالة بعد حذف الرسالة
+    
     if ALLOWED_USERNAME in message_text:
         return
 
