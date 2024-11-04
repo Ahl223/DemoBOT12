@@ -22,7 +22,7 @@ FORBIDDEN_WORDS = [
     "رعاية", "تأمين", "مؤسسة", "مشاريع", "اتصال بنا", "إعلانات الشركات",
     "عروض خاصة", "خدمات طلابية", "عروض ترويجية", "بحث عمل", "وظيفة شاغرة", "فرصة عمل", "إعلانات توظيف",
     "تقديم طلب", "استفسار عن", "معلومات حول", "بدون إذن",
-    "اسقاط", "سكليف", "تطبيق صحتي", "كرت تشغيل",
+    "اسقاط", "سكليف", "تطبيق صحتي", "كرت تشغيل", "ذي تحل", "ذا يحل",
     "خطابه", "الخطــابه", "whatsapp.com", "+967", "967", "قروض بن التنمية", "بنك التنمية", "سنرد", "وسنرد",
     "عذر طبي معتمد", "فحص طبي", "عذر طبي ورقي", "تقرير طبي ورقي", "ســ.ـكـلـ.ــيـ.ـف", "صــحـ.ـتــي",
     "شهادات صحية", "طاقم التدريس", "ذوو خبرة", 
@@ -72,6 +72,8 @@ def contains_forbidden_content(text):
 
     # التحقق من التركيبات المحظورة
     forbidden_combinations = [
+        (r'\bاجازة مرضيه\b', r'\bتقرير طبي\b'), 
+        (r'\bتقرير طبي\b', r'\bاجازة مرضيه\b'),
         (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
         (r'\bعروض\b', r'\bمضمون\b'),
         (r'\bبوربوينت\b', r'\bواجبات\b'),
@@ -81,22 +83,13 @@ def contains_forbidden_content(text):
         (r'\bحل\b', r'\bخرائط مفاهيم\b'),
         (r'\bمشروع\b', r'\bتكاليف\b'),
         (r'\bحل\b', r'\bمضمون\b'),
-        (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
-        (r'\bمشروع\b', r'\bتكاليف\b'),
         (r'\bامتحان\b', r'\bمشروع\b'), 
         (r'\bمشروع\b', r'\bامتحان\b'),
-        (r'\bاجازة مرضيه\b', r'\bتقرير طبي\b'), 
-        (r'\bتقرير طبي\b', r'\bاجازة مرضيه\b'),
-        (r'\b967', None),
     ]
     
     for pattern1, pattern2 in forbidden_combinations:
-        if pattern2:
-            if re.search(f'{pattern1}.*{pattern2}|{pattern2}.*{pattern1}', normalized_text):
-                return True
-        else:
-            if re.search(pattern1, normalized_text):
-                return True
+        if re.search(f'{pattern1}.*{pattern2}|{pattern2}.*{pattern1}', normalized_text):
+            return True
 
     if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
         return True
