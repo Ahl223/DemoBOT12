@@ -67,7 +67,9 @@ def contains_forbidden_content(text):
         if re.search(rf'\b{re.escape(word)}\b', normalized_text): 
             return True
         
-    if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):
+    if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):  # أرقام مصرية
+        return True
+    if re.search(r'(\+?967[1-9][0-9]{7})', normalized_text):  # أرقام يمنية
         return True
 
     # التحقق من التركيبات المحظورة
@@ -85,6 +87,8 @@ def contains_forbidden_content(text):
         (r'\bحل\b', r'\bمضمون\b'),
         (r'\bامتحان\b', r'\bمشروع\b'), 
         (r'\bمشروع\b', r'\bامتحان\b'),
+        (r'\bمضمون\b', r'\bيستاهل\b'),
+        (r'\bيستاهل\b', r'\مضمون\b'),
     ]
     
     for pattern1, pattern2 in forbidden_combinations:
