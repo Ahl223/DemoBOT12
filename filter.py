@@ -94,8 +94,8 @@ def contains_forbidden_content(text):
         (r'\bمشروع\b', r'\bامتحان\b'),
         (r'\bمضمون\b', r'\bيستاهل\b'),
         (r'\bيستاهل\b', r'\مضمون\b'),
-        (r'\b+966577287156\b', r'\b/\b'),
-        (r'\b/\b', r'\+966577287156\b'),
+        (r'\b+966577287156\b', r'\b1/\b'),
+        (r'\b1/\b', r'\+966577287156\b'),
     ]
     
     for pattern1, pattern2 in forbidden_combinations:
