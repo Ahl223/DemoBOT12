@@ -42,9 +42,7 @@ def remove_tashkeel(text):
 
 def normalize_arabic_text(text):
     # إزالة الحروف الإضافية مثل الشدة والمد وغيرها
-    text = unicodedata.normalize('NFKC', text)
-    text = re.sub(r'[^\w\s]', '', text)  # إزالة الرموز الخاصة
-    text = re.sub(r'[ـ]', '', text)  # إزالة التاء المربوطة أو الحروف الممدودة
+    text = re.sub(r'[ـ*]', '', text)
     # إزالة المسافات المكررة
     text = re.sub(r'\s+', ' ', text).strip()
 
@@ -67,15 +65,12 @@ def normalize_arabic_text(text):
     return text
 
 def contains_forbidden_content(text):
-    # تطبيع النص المدخل
     normalized_text = normalize_arabic_text(text)
     normalized_forbidden_words = [normalize_arabic_text(word) for word in FORBIDDEN_WORDS]
 
-    # التحقق من الكلمات المحظورة
     for word in normalized_forbidden_words:
         if re.search(rf'\b{re.escape(word)}\b', normalized_text): 
             return True
-        
         
     if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):  # أرقام مصرية
         return True
