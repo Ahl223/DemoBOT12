@@ -42,7 +42,9 @@ def remove_tashkeel(text):
 
 def normalize_arabic_text(text):
     # إزالة الحروف الإضافية مثل الشدة والمد وغيرها
-    text = re.sub(r'[ـ*]', '', text)
+    text = unicodedata.normalize('NFKC', text)
+    text = re.sub(r'[^\w\s]', '', text)  # إزالة الرموز الخاصة
+    text = re.sub(r'[ـ]', '', text)  # إزالة التاء المربوطة أو الحروف الممدودة
     # إزالة المسافات المكررة
     text = re.sub(r'\s+', ' ', text).strip()
 
