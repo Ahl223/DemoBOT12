@@ -93,6 +93,8 @@ def contains_forbidden_content(text):
         (r'\bمشروع\b', r'\bامتحان\b'),
         (r'\bمضمون\b', r'\bيستاهل\b'),
         (r'\bيستاهل\b', r'\مضمون\b'),
+        (r'\b+966577287156\b', r'\b/\b'),
+        (r'\b/\b', r'\+966577287156\b'),
     ]
     
     for pattern1, pattern2 in forbidden_combinations:
@@ -100,10 +102,6 @@ def contains_forbidden_content(text):
             return True
 
     if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
-        return True
-
-    # التحقق من وجود "/" و "+966577287156" في نفس الرسالة
-    if "/" in message and "+966577287156" in message:
         return True
 
     return False
