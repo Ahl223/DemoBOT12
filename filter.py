@@ -103,13 +103,13 @@ def contains_forbidden_content(text):
 
     if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
         return True
-
+        
     # التحقق من وجود "/" و "+966577287156" في نفس الرسالة
     if "/" in message and "+966577287156" in message:
-        # هنا يمكنك إضافة شرط إضافي للتحقق من أن "/" ليس جزءاً من رابط أو أمر خاص
-        if not message.startswith("/") or not message[1:].isdigit():
+        # التحقق من وجود "/" يتبعها رقم فقط
+        if re.search(r'\/\d+', message):  # إذا كان / يتبع رقم
             return True
-
+            
     return False
 
 async def filter_messages(update: Update, context: CallbackContext) -> None:
