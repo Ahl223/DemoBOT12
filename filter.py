@@ -102,6 +102,10 @@ def contains_forbidden_content(text):
     if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
         return True
 
+    # التحقق من وجود "/" و "+966577287156" في نفس الرسالة
+    if "/" in message and "+966577287156" in message:
+        return True
+
     return False
 
 async def filter_messages(update: Update, context: CallbackContext) -> None:
