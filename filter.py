@@ -72,6 +72,9 @@ def contains_forbidden_content(text):
     for word in normalized_forbidden_words:
         if re.search(rf'\b{re.escape(word)}\b', normalized_text): 
             return True
+
+        if 'https://t.me/kamelamanwn' in normalized_text:
+        return True  # منع الرابط المحدد
         
     if re.search(r'(\+?20[1-9][0-9]{8,9})', normalized_text):  # أرقام مصرية
         return True
