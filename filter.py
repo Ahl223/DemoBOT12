@@ -152,7 +152,7 @@ async def filter_messages(update: Update, context: CallbackContext) -> None:
     if contains_forbidden_content(message_text):
         try:
             await update.message.delete()
-            await update.message.reply_text("تم منع الرسالة")
+            await update.message.reply_text("")
         except Exception as e:
             logger.error(f"Error deleting message: {e}")
 
@@ -164,7 +164,7 @@ async def handle_update(update: Update, context: CallbackContext) -> None:
         if contains_forbidden_content(edited_text):
             try:
                 await context.bot.delete_message(chat_id=update.edited_message.chat.id, message_id=update.edited_message.message_id)
-                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="تم منع الرسالة")
+                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="")
             except Exception as e:
                 logger.error(f"Error deleting edited message: {e}")
 
