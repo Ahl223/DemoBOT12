@@ -30,9 +30,7 @@ FORBIDDEN_WORDS = [
     "+966577287156", "سكليف", "مرضية", "عسكري", "مدني", "أيام", "غياب", "/1",
     "966577287156", "577287156", "+966577287156", "0577287156", "+539615682",
     "1/", "/1", "https://t.me/national776", "+966 53 961 5682",
-    # إضافات جديدة
     "يرمسني خاص", "عـ.ـذر", "شــ.ـهــادة", "صـ.ـحـتــي", "كلمني", "مضمونه", "طـ.ـبـ.ـي", "0596783725", "0542939869",
-    "للاستفادة"
 ]
 
 
@@ -155,7 +153,7 @@ async def filter_messages(update: Update, context: CallbackContext) -> None:
     if contains_forbidden_content(message_text):
         try:
             await update.message.delete()
-            await update.message.reply_text("")
+            await update.message.reply_text("تم حذف الرسالة المعدلة لاحتوائها على محتوى غير مسموح به.")
         except Exception as e:
             logger.error(f"Error deleting message: {e}")
 
@@ -167,7 +165,7 @@ async def handle_update(update: Update, context: CallbackContext) -> None:
         if contains_forbidden_content(edited_text):
             try:
                 await context.bot.delete_message(chat_id=update.edited_message.chat.id, message_id=update.edited_message.message_id)
-                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="")
+                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="تم حذف الرسالة المعدلة لاحتوائها على محتوى غير مسموح به.")
             except Exception as e:
                 logger.error(f"Error deleting edited message: {e}")
 
