@@ -73,52 +73,6 @@ def contains_forbidden_content(text):
     if re.search(r'(\+?967[1-9][0-9]{7})', normalized_text):
         return True
 
-    # التحقق من التركيبات المحظورة
-    forbidden_combinations = [
-        (r'\bاجازة مرضيه\b', r'\bتقرير طبي\b'),
-        (r'\bتقرير طبي\b', r'\bاجازة مرضيه\b'),
-        (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
-        (r'\bعروض\b', r'\bمضمون\b'),
-        (r'\bبوربوينت\b', r'\bواجبات\b'),
-        (r'\bباوربوينت\b', r'\bواجبات\b'),
-        (r'\bبوربوينت\b', r'\bمشاريع\b'),
-        (r'\bباوربوينت\b', r'\bمشاريع\b'),
-        (r'\bحل\b', r'\bخرائط مفاهيم\b'),
-        (r'\bمشروع\b', r'\bتكاليف\b'),
-        (r'\bحل\b', r'\bمضمون\b'),
-        (r'\bامتحان\b', r'\bمشروع\b'),
-        (r'\bمشروع\b', r'\bامتحان\b'),
-        (r'\bمضمون\b', r'\bيستاهل\b'),
-        (r'\bيستاهل\b', r'\bمضمون\b'),
-        (r'\b+966577287156\b', r'\b1/\b'),
-        (r'\b1/\b', r'\b+966577287156\b'),
-        (r'\b1\b', r'\b/\b'),
-        (r'\b/\b', r'\b1\b'),
-        # The second list of forbidden combinations
-        (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
-        (r'\bعروض\b', r'\bمضمون\b'),
-        (r'\bبوربوينت\b', r'\bواجبات\b'),
-        (r'\bباوربوينت\b', r'\bواجبات\b'),
-        (r'\bبوربوينت\b', r'\bمشاريع\b'),
-        (r'\bباوربوينت\b', r'\bمشاريع\b'),
-        (r'\bحل\b', r'\bخرائط مفاهيم\b'),
-        (r'\bمشروع\b', r'\bتكاليف\b'),
-        (r'\bحل\b', r'\bمضمون\b'),
-        (r'\bتكاليف\b', r'\bبرزنتيشن\b'),
-        (r'\bمشروع\b', r'\bتكاليف\b'),
-        (r'\bامتحان\b', r'\bمشروع\b'),
-        (r'\bمشروع\b', r'\bامتحان\b'),
-        (r'\b967', None)  # This part is a special case to match the number pattern
-    ]
-    
-    for pattern1, pattern2 in forbidden_combinations:
-        if pattern2:
-            if re.search(f'{pattern1}.*{pattern2}|{pattern2}.*{pattern1}', normalized_text):
-                return True
-        else:
-            if re.search(pattern1, normalized_text):
-                return True
-
     if re.search(r'http[s]?://|www\.|t\.me/|@\w+|wa\.me/\d+', normalized_text):
         return True
 
@@ -151,7 +105,7 @@ async def filter_messages(update: Update, context: CallbackContext) -> None:
     if contains_forbidden_content(message_text):
         try:
             await update.message.delete()
-            await update.message.reply_text("")
+            await update.message.reply_text("تم حذف الرسالة لمخالفتها القوانين.")
         except Exception as e:
             logger.error(f"Error deleting message: {e}")
 
@@ -163,9 +117,9 @@ async def handle_update(update: Update, context: CallbackContext) -> None:
         if contains_forbidden_content(edited_text):
             try:
                 await context.bot.delete_message(chat_id=update.edited_message.chat.id, message_id=update.edited_message.message_id)
-                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="")
+                await context.bot.send_message(chat_id=update.edited_message.chat.id, text="تم حذف الرسالة المعدلة لمخالفتها القوانين.")
             except Exception as e:
                 logger.error(f"Error deleting edited message: {e}")
 
 def add_filters(application):
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_update))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, filter_messages))
